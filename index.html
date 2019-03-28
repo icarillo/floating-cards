@@ -43,23 +43,33 @@
         <h3>Controls</h3>
         <span>
             <label for="distance">Distance:</label>
-            <input id="distance" class="controls" type="range" min="0" max="100">
+            <div class="range-holders">
+                <input id="distance" class="controls" type="range" min="0" max="100" value="0">
+            </div>
         </span>
         <span>
             <label for="scale">Scale:</label>
-            <input id="scale" class="controls" type="range" min="0" max="100">
+            <div class="range-holders">
+                <input id="scale" class="controls" type="range" min="0" max="100" value="30">
+            </div>
         </span>
         <span>
             <label for="saturation">Saturation:</label>
-            <input id="saturation" class="controls" type="range" min="0" max="100">
+            <div class="range-holders">
+                <input id="saturation" class="controls" type="range" min="0" max="100" value="100">
+            </div>
         </span>
         <span>
             <label for="speed">Speed:</label>
-            <input id="speed" class="controls" type="range" min="0" max="100">
+            <div class="range-holders">
+                <input id="speed" class="controls" type="range" min="0" max="100" value="75">
+            </div>
         </span>
         <span>
             <label for="shadow">Shadow:</label>
-            <input id="shadow" class="controls" type="range" min="-15" max="-5">
+            <div class="range-holders">
+                <input id="shadow" class="controls" type="range" min="-15" max="-5" value="-5">
+            </div>
         </span>
     </div>
     <script src="./js/floating-cards.js"></script>

@@ -8,61 +8,7 @@
         }
         return hexColor;
     };
-    
-    const Card = function(el, hierarchy, width) {
-        const card = this;
-        // here I store the element as a property to manage the style later
-        card.el = el;
-        card.width = width;
-        card.hierarchy = hierarchy;
-        card.color = randomColor();
 
-        card.el.style.width = `${card.width}px`;
-        card.el.style.backgroundColor = card.color;
-        card.update = hierarchy => {
-            card.hierarchy = hierarchy;
-        };
-
-        return card;
-    };
-    const Control = function (el = document.querySelector('#control')) {
-        const control = this;
-        control.el = el;
-        control.inputs = el.querySelectorAll('.controls')
-
-        control.setSliderValues = inputEl => {
-            switch (inputEl.id){
-                case 'distance':
-                    oSlider.cardsDistance = 200 + (parseInt(inputEl.value)/100) * 100;
-                    break;
-                case 'scale':
-                    oSlider.scaleVar = 100 - parseInt(inputEl.value);
-                    break;
-                case 'speed':
-                    oSlider.stop();
-                    oSlider.interval = 3000 - (parseInt(inputEl.value) * 20);
-                    oSlider.start();
-                    break;
-                case 'saturation':
-                    oSlider.satVar = 100 - parseInt(inputEl.value);
-                    break;
-                case 'shadow':
-                    console.log(inputEl.value);
-                    oSlider.cardsShadow = parseInt(inputEl.value);
-                    console.log(oSlider.cardsShadow);
-                    break;
-                default:
-                    break;
-
-            }
-        };
-
-        control.inputs.forEach( input => {
-            input.addEventListener('input', e => { control.setSliderValues(e.currentTarget) });
-        });
-
-        return control;
-    }
     const Slider = function (el) {
         // SETTINGS and BASIC PROPERTIES
         const slider = this;
@@ -130,6 +76,119 @@
 
         return slider;
     };
+
+    const Card = function(el, hierarchy, width) {
+        const card = this;
+        // here I store the element as a property to manage the style later
+        card.el = el;
+        card.width = width;
+        card.hierarchy = hierarchy;
+        card.color = randomColor();
+
+        card.el.style.width = `${card.width}px`;
+        card.el.style.backgroundColor = card.color;
+        card.update = hierarchy => {
+            card.hierarchy = hierarchy;
+        };
+
+        return card;
+    };
+
+    const Control = function (el = document.querySelector('#control')) {
+        const control = this;
+        control.el = el;
+
+        control.rangeHolders = el.querySelectorAll('.range-holders');
+        control.rangeHolders.forEach( el => {
+            el.input = el.querySelector('input');
+            el.style.height = '20px';
+            el.style.position = 'relative';
+            el.trackComponents = {
+                slideThumb: document.createElement('span'),
+                before: document.createElement('span'),
+                after: document.createElement('span')
+            };
+            for( const property in el.trackComponents){
+                el.prepend(el.trackComponents[property]);
+                const style = el.trackComponents[property].style;
+                const thisComponent = el.trackComponents[property];
+                el.input.style.opacity = '0';
+                style.position = 'absolute';                  
+                style.bottom = '0';
+
+                switch(property){
+                    case 'before':
+                        thisComponent.width = 100 * (el.input.value - el.input.min) / (el.input.max - el.input.min) ;
+                        style.height = '4px';
+                        style.borderRadius = '2px 0 0 2px';
+                        style.width = `${thisComponent.width}%`;
+                        style.left = '0';
+                        style.background = '#343333';
+                        break;
+                    case 'after':
+                        thisComponent.width = 100 * (el.input.max - el.input.value) / (el.input.max - el.input.min);
+                        style.height = '4px';
+                        style.borderRadius = '0 2px 2px 0';
+                        style.width = `${thisComponent.width}%`;
+                        style.right = '0';
+                        style.background = '#cccccc';
+                        break;
+                    case 'slideThumb':
+                        thisComponent.position = 100 * (el.input.value - el.input.min) / (el.input.max - el.input.min) ;
+                        style.height = '12px';
+                        style.width = '12px';
+                        style.left = `${thisComponent.position}%`;
+                        style.bottom = '-4px';
+                        style.transform = 'translate(-50%)';
+                        style.borderRadius = '6px';
+                        style.background = '#db4f16';
+                        break;
+                    default:
+                        break;
+                };
+            };            
+            el.updateValues = newValue => {
+                el.trackComponents.before.style.width = `${100 * (newValue - el.input.min) / (el.input.max - el.input.min)}%`;
+                el.trackComponents.after.style.width = `${100 * (el.input.max - newValue) / (el.input.max - el.input.min)}%`;
+                el.trackComponents.slideThumb.style.left = `${100 * (newValue - el.input.min) / (el.input.max - el.input.min)}%`;
+            };
+        });
+
+        control.changeSliderValues = inputEl => {
+            switch (inputEl.id){
+                case 'distance':
+                    oSlider.cardsDistance = 200 + (parseInt(inputEl.value)/100) * 100;
+                    break;
+                case 'scale':
+                    oSlider.scaleVar = 100 - parseInt(inputEl.value);
+                    break;
+                case 'speed':
+                    oSlider.stop();
+                    oSlider.interval = 3000 - (parseInt(inputEl.value) * 20);
+                    oSlider.start();
+                    break;
+                case 'saturation':
+                    oSlider.satVar = 100 - parseInt(inputEl.value);
+                    break;
+                case 'shadow':
+                    oSlider.cardsShadow = parseInt(inputEl.value);
+                    break;
+                default:
+                    break;
+            }
+        };
+        
+
+        //EVENTS
+        control.rangeHolders.forEach( el => {
+            el.input.addEventListener('input', e => { 
+                control.changeSliderValues(e.currentTarget);
+                el.updateValues(e.currentTarget.value);
+            });
+        });
+
+        return control;
+    }
 
     const keyhole = document.getElementById('cardOnFocus');
     const oSlider = new Slider(keyhole);
