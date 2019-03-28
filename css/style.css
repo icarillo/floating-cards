@@ -1,0 +1,54 @@
+*{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+.slider{
+    margin-top: 60px;
+    display: inline-block;
+    width: 100%;
+    padding: 30px 0;
+    overflow: hidden;
+}
+#cardOnFocus{
+    height: 200px;
+    width: 200px;
+    margin:auto;
+    overflow: visible;
+    position: relative;
+}
+.cardholder{
+    height: 100%;
+    display: inline-block;
+}
+.card{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    box-shadow: 0 5px 15px -15px #333333;
+}
+.card img{
+    height: 100%;
+    width: 100%;
+}
+#control {
+    margin: 15px auto 0;
+    width: 250px;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 15px;
+    border: 3px solid #eee;
+}
+#control h3{
+    margin-top: 0;
+    text-align: center;
+}
+#control span{
+    position:  relative;
+    display: flex;
+    width: 100%;
+    margin: 8px 0;
+}
+#control span>*{
+    width: 50%;
+}

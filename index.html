@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Floating Cards</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <section id="homeCardsSection">
+        <div class="slider">
+            <div id="cardOnFocus">
+                <div class="cardholder">
+                    <div class="card coverBg">
+                        <img src="./imgs/80sdiscomike.png" alt="Mike smooth 80s disco">
+                    </div>
+                </div>
+                <div class="cardholder">
+                    <div class="card coverBg">
+                        <img src="./imgs/90sdiscomike.png" alt="Mike smooth 90s disco">
+                    </div>
+                </div>
+                <div class="cardholder">
+                    <div class="card coverBg">
+                        <img src="./imgs/darkdiscomike.png" alt="Mike smooth new era">
+                    </div>
+                </div>
+                <div class="cardholder">
+                    <div class="card coverBg">
+                        <img src="./imgs/3ddiscomike.png" alt="Mike smooth 2000">
+                    </div>
+                </div>
+                <div class="cardholder">
+                    <div class="card coverBg">
+                        <img src="./imgs/whitediscomike.png" alt="Mike smooth Ibiza">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="control">
+        <h3>Controls</h3>
+        <span>
+            <label for="distance">Distance:</label>
+            <input id="distance" class="controls" type="range" min="0" max="100">
+        </span>
+        <span>
+            <label for="scale">Scale:</label>
+            <input id="scale" class="controls" type="range" min="0" max="100">
+        </span>
+        <span>
+            <label for="saturation">Saturation:</label>
+            <input id="saturation" class="controls" type="range" min="0" max="100">
+        </span>
+        <span>
+            <label for="speed">Speed:</label>
+            <input id="speed" class="controls" type="range" min="0" max="100">
+        </span>
+        <span>
+            <label for="shadow">Shadow:</label>
+            <input id="shadow" class="controls" type="range" min="-15" max="-5">
+        </span>
+    </div>
+    <script src="./js/floating-cards.js"></script>
+</body>
+</html>
