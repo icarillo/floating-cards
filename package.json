@@ -1,0 +1,13 @@
+{
+  "name": "floating-cards",
+  "version": "1.0.0",
+  "description": "Practicing creation of sliders using JavaScript Objects",
+  "main": "js/floating-cards.js",
+  "type": "module",
+  "exports": {
+    ".": "./js/floating-cards.js",
+    "./style.css": "./css/style.css"
+  },
+  "scripts": {},
+  "dependencies": {}
+}
