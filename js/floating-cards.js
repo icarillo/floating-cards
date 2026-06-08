@@ -27,6 +27,62 @@ const Slider = function (el) {
     slider.scaleVar = 30;
     // array to store my cards/slides
     slider.cards = [];
+
+    // CREATE DYNAMIC PROGRESS BAR AND INDICATOR
+    if (typeof document !== 'undefined') {
+        if (!slider.el.querySelector('.slider-progress-bar')) {
+            slider.progressBar = document.createElement('div');
+            slider.progressBar.className = 'slider-progress-bar';
+            slider.progressBarFill = document.createElement('div');
+            slider.progressBarFill.className = 'slider-progress-bar-fill';
+            slider.progressBar.appendChild(slider.progressBarFill);
+            slider.el.appendChild(slider.progressBar);
+        } else {
+            slider.progressBar = slider.el.querySelector('.slider-progress-bar');
+            slider.progressBarFill = slider.el.querySelector('.slider-progress-bar-fill');
+        }
+
+        if (!slider.el.querySelector('.slider-status-indicator')) {
+            slider.statusIndicator = document.createElement('div');
+            slider.statusIndicator.className = 'slider-status-indicator';
+            slider.el.appendChild(slider.statusIndicator);
+        } else {
+            slider.statusIndicator = slider.el.querySelector('.slider-status-indicator');
+        }
+    }
+
+    slider.updateStatusIndicator = () => {
+        if (!slider.statusIndicator) return;
+        if (startslider) {
+            slider.statusIndicator.innerHTML = `
+              <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
+                <path fill="currentColor" d="M8 5v14l11-7z"/>
+              </svg>
+              <span>Autoplay</span>
+            `;
+            slider.statusIndicator.className = 'slider-status-indicator playing';
+        } else {
+            slider.statusIndicator.innerHTML = `
+              <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
+                <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+              <span>Paused</span>
+            `;
+            slider.statusIndicator.className = 'slider-status-indicator paused';
+        }
+    };
+
+    slider.resetProgressBar = () => {
+        if (!slider.progressBarFill) return;
+        slider.progressBarFill.style.transition = 'none';
+        slider.progressBarFill.style.width = '0%';
+        void slider.progressBarFill.offsetWidth; // Force layout recalculation
+        
+        if (startslider) {
+            slider.progressBarFill.style.transition = `width ${slider.interval}ms linear`;
+            slider.progressBarFill.style.width = '100%';
+        }
+    };
     
     // METHODS
     // setting the cards that will be used
@@ -66,6 +122,7 @@ const Slider = function (el) {
         });
         // now that I updated all cards hierarchy, I will update my slider to style them using the slider sets
         slider.update();
+        slider.resetProgressBar();
     };
     // update my slider information when the cards hierarchy change
     slider.update = () => {
@@ -105,6 +162,8 @@ const Slider = function (el) {
     slider.start = () => {
         if (!startslider) {
             startslider = setInterval(slider.move, slider.interval);
+            slider.updateStatusIndicator();
+            slider.resetProgressBar();
         }
     };
     // call this method to stop sliding automatically
@@ -112,8 +171,15 @@ const Slider = function (el) {
         if (startslider) {
             clearInterval(startslider);
             startslider = null;
+            slider.updateStatusIndicator();
+            slider.resetProgressBar();
         }
     };
+
+    if (typeof document !== 'undefined') {
+        slider.updateStatusIndicator();
+        slider.resetProgressBar();
+    }
 
     return slider;
 };
