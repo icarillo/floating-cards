@@ -4,6 +4,7 @@
     width: 100%;
     padding: 30px 0;
     overflow: hidden;
+    position: relative;
 }
 #cardOnFocus{
     height: 200px;
@@ -56,32 +57,60 @@
     cursor: pointer;
 }
 
-/* Progress Bar & Status Indicator */
-.slider-progress-bar {
+/* Progress Bar (Circular Clock Pie Chart) & Status Indicator */
+.slider-indicators-row {
     position: absolute;
-    bottom: -15px; /* Moved up to fit inside .slider padding */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 4px;
-    background: rgba(0, 0, 0, 0.08);
-    border-radius: 2px;
-    overflow: hidden;
+    bottom: 12px; /* same row alignment */
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    width: 100%;
+    pointer-events: none;
     z-index: 10;
 }
 
-.slider-progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: #357c58;
-    transition: width 0s linear;
+.slider-clock-indicator {
+    width: 20px;
+    height: 20px;
+    transform: rotate(-90deg); /* Start at 12 o'clock */
+    display: none;
+    pointer-events: auto;
+    margin-left: auto; /* Push to far right inside flex container */
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.slider-clock-indicator:hover {
+    opacity: 1;
+}
+
+.slider-clock-indicator.empty {
+    opacity: 0.25;
+}
+
+.slider-clock-indicator.empty .circle-fill {
+    visibility: hidden;
+}
+
+.slider-clock-indicator .circle-bg {
+    fill: rgba(0, 0, 0, 0.1);
+    stroke: none;
+}
+
+.slider-clock-indicator .circle-fill {
+    fill: none;
+    stroke: #357c58; /* branded green */
+    stroke-width: 18; /* exact stroke width for radius 9 to fill center as a pie chart */
+    stroke-dasharray: 56.55, 56.55;
+    transition: stroke-dashoffset 0s linear;
 }
 
 .slider-status-indicator {
-    position: absolute;
-    bottom: -23px; /* Positioned at the bottom-left of keyhole, inside .slider padding */
-    left: 10px;
-    display: flex;
+    display: none;
     align-items: center;
     gap: 4px;
     font-size: 0.72rem;
@@ -94,9 +123,9 @@
     background: rgba(0, 0, 0, 0.04);
     color: #666;
     transition: all 0.3s ease;
-    z-index: 10;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto;
 }
 
 .slider-status-indicator:hover {

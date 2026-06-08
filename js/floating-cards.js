@@ -34,22 +34,48 @@ const Slider = function (el) {
 
     // CREATE DYNAMIC PROGRESS BAR AND INDICATOR
     if (typeof document !== 'undefined') {
-        if (!slider.el.querySelector('.slider-progress-bar')) {
-            slider.progressBar = document.createElement('div');
-            slider.progressBar.className = 'slider-progress-bar';
-            slider.progressBarFill = document.createElement('div');
-            slider.progressBarFill.className = 'slider-progress-bar-fill';
-            slider.progressBar.appendChild(slider.progressBarFill);
-            slider.el.appendChild(slider.progressBar);
+        const container = slider.el.parentElement || slider.el;
+        
+        let indicatorsRow = container.querySelector('.slider-indicators-row');
+        if (!indicatorsRow) {
+            indicatorsRow = document.createElement('div');
+            indicatorsRow.className = 'slider-indicators-row';
+            container.appendChild(indicatorsRow);
+        }
+        
+        if (!indicatorsRow.querySelector('.slider-clock-indicator')) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'slider-clock-indicator');
+            svg.setAttribute('viewBox', '0 0 36 36');
+
+            const circleBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circleBg.setAttribute('class', 'circle-bg');
+            circleBg.setAttribute('cx', '18');
+            circleBg.setAttribute('cy', '18');
+            circleBg.setAttribute('r', '18');
+            
+            const circleFill = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circleFill.setAttribute('class', 'circle-fill');
+            circleFill.setAttribute('cx', '18');
+            circleFill.setAttribute('cy', '18');
+            circleFill.setAttribute('r', '9');
+            circleFill.setAttribute('stroke-dasharray', '56.55, 56.55');
+            
+            svg.appendChild(circleBg);
+            svg.appendChild(circleFill);
+            
+            indicatorsRow.appendChild(svg);
+            slider.progressBar = svg;
+            slider.progressBarFill = circleFill;
         } else {
-            slider.progressBar = slider.el.querySelector('.slider-progress-bar');
-            slider.progressBarFill = slider.el.querySelector('.slider-progress-bar-fill');
+            slider.progressBar = indicatorsRow.querySelector('.slider-clock-indicator');
+            slider.progressBarFill = slider.progressBar.querySelector('.circle-fill');
         }
 
-        if (!slider.el.querySelector('.slider-status-indicator')) {
+        if (!indicatorsRow.querySelector('.slider-status-indicator')) {
             slider.statusIndicator = document.createElement('div');
             slider.statusIndicator.className = 'slider-status-indicator';
-            slider.el.appendChild(slider.statusIndicator);
+            indicatorsRow.appendChild(slider.statusIndicator);
             
             // Toggle autoplay when clicked
             slider.statusIndicator.addEventListener('click', () => {
@@ -60,7 +86,12 @@ const Slider = function (el) {
                 }
             });
         } else {
-            slider.statusIndicator = slider.el.querySelector('.slider-status-indicator');
+            slider.statusIndicator = indicatorsRow.querySelector('.slider-status-indicator');
+        }
+
+        // Always push the clock progress indicator to the end
+        if (slider.progressBar) {
+            indicatorsRow.appendChild(slider.progressBar);
         }
     }
 
@@ -71,10 +102,11 @@ const Slider = function (el) {
             return;
         }
         slider.statusIndicator.style.display = 'flex';
+        
         if (startslider) {
             slider.statusIndicator.innerHTML = `
               <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
-                <path fill="currentColor" d="M8 5v14l11-7z"/>
+                <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
               </svg>
               <span>Autoplay</span>
             `;
@@ -82,7 +114,7 @@ const Slider = function (el) {
         } else {
             slider.statusIndicator.innerHTML = `
               <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
-                <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                <path fill="currentColor" d="M8 5v14l11-7z"/>
               </svg>
               <span>Paused</span>
             `;
@@ -98,12 +130,15 @@ const Slider = function (el) {
         }
         slider.progressBar.style.display = 'block';
         slider.progressBarFill.style.transition = 'none';
-        slider.progressBarFill.style.width = '0%';
-        void slider.progressBarFill.offsetWidth; // Force layout recalculation
+        slider.progressBarFill.style.strokeDashoffset = '56.55';
+        void slider.progressBarFill.getBoundingClientRect(); // Force layout recalculation
         
         if (startslider) {
-            slider.progressBarFill.style.transition = `width ${slider.interval}ms linear`;
-            slider.progressBarFill.style.width = '100%';
+            slider.progressBar.classList.remove('empty');
+            slider.progressBarFill.style.transition = `stroke-dashoffset ${slider.interval}ms linear`;
+            slider.progressBarFill.style.strokeDashoffset = '0';
+        } else {
+            slider.progressBar.classList.add('empty');
         }
     };
     
