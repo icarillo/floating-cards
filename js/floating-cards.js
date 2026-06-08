@@ -28,6 +28,10 @@ const Slider = function (el) {
     // array to store my cards/slides
     slider.cards = [];
 
+    // OPTIONS
+    slider.showIndicator = false;
+    slider.showProgressBar = false;
+
     // CREATE DYNAMIC PROGRESS BAR AND INDICATOR
     if (typeof document !== 'undefined') {
         if (!slider.el.querySelector('.slider-progress-bar')) {
@@ -46,6 +50,15 @@ const Slider = function (el) {
             slider.statusIndicator = document.createElement('div');
             slider.statusIndicator.className = 'slider-status-indicator';
             slider.el.appendChild(slider.statusIndicator);
+            
+            // Toggle autoplay when clicked
+            slider.statusIndicator.addEventListener('click', () => {
+                if (startslider) {
+                    slider.stop();
+                } else {
+                    slider.start();
+                }
+            });
         } else {
             slider.statusIndicator = slider.el.querySelector('.slider-status-indicator');
         }
@@ -53,6 +66,11 @@ const Slider = function (el) {
 
     slider.updateStatusIndicator = () => {
         if (!slider.statusIndicator) return;
+        if (!slider.showIndicator) {
+            slider.statusIndicator.style.display = 'none';
+            return;
+        }
+        slider.statusIndicator.style.display = 'flex';
         if (startslider) {
             slider.statusIndicator.innerHTML = `
               <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
@@ -74,6 +92,11 @@ const Slider = function (el) {
 
     slider.resetProgressBar = () => {
         if (!slider.progressBarFill) return;
+        if (!slider.showProgressBar) {
+            slider.progressBar.style.display = 'none';
+            return;
+        }
+        slider.progressBar.style.display = 'block';
         slider.progressBarFill.style.transition = 'none';
         slider.progressBarFill.style.width = '0%';
         void slider.progressBarFill.offsetWidth; // Force layout recalculation
